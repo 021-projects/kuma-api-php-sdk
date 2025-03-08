@@ -1,0 +1,30 @@
+{
+    "name": "021/kuma-api-php-sdk",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "O21\\KumaApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "O21\\KumaApi\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "021-projects",
+            "email": "20326979+021-projects@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "^7.9",
+        "021/api-entity": "^2.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
