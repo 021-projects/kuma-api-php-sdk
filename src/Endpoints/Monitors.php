@@ -9,6 +9,8 @@ use O21\KumaApi\Enums\MonitorType;
 
 class Monitors extends KumaEndpoint
 {
+    protected const MSG_DELETED = 'Deleted Successfully.';
+
     /**
      * @return Monitor[]
      */
@@ -118,7 +120,8 @@ class Monitors extends KumaEndpoint
     public function delete(int $id): bool
     {
         $data = $this->jsonRequest((string)$id, method: 'DELETE');
-        return $data['success'] ?? false;
+        $msg = $data['msg'] ?? null;
+        return $msg === self::MSG_DELETED;
     }
 
     /**

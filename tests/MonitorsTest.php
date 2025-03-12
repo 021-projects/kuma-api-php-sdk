@@ -3,6 +3,7 @@
 namespace O21\KumaApi\Tests;
 
 use Carbon\Carbon;
+use O21\KumaApi\Endpoints\Monitors;
 use O21\KumaApi\Entities\Heartbeat;
 use O21\KumaApi\Entities\Monitor;
 use O21\KumaApi\Enums\MonitorStatus;
@@ -12,17 +13,19 @@ class MonitorsTest extends KumaTestCase
 {
     protected ?Monitor $monitor = null;
     protected ?int $monitorId = null;
+    protected Monitors $endpoint;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->auth();
+        $this->endpoint = $this->kuma->monitors;
     }
 
     public function testCreate(): void
     {
-        $id = $this->kuma->monitors->create(
+        $id = $this->endpoint->create(
             MonitorType::HTTP,
             'name1',
             url: 'https://example.com'
@@ -35,7 +38,7 @@ class MonitorsTest extends KumaTestCase
 
     public function testGetList(): void
     {
-        $monitors = $this->kuma->monitors->list();
+        $monitors = $this->endpoint->list();
 
         $this->assertIsArray($monitors);
         $this->assertNotEmpty($monitors);
@@ -60,11 +63,24 @@ class MonitorsTest extends KumaTestCase
         $this->assertIsString($monitor->method);
     }
 
+    public function testDelete(): void
+    {
+        $this->assertMonitorIdSettled();
+
+        $success = $this->endpoint->delete($this->monitorId);
+        $this->assertTrue($success);
+
+        $m = $this->endpoint->get($this->monitorId);
+        $this->assertNull($m);
+
+        $this->monitorId = null;
+    }
+
     public function testGetById(): void
     {
         $this->assertMonitorIdSettled();
 
-        $monitor = $this->kuma->monitors->get($this->monitorId);
+        $monitor = $this->endpoint->get($this->monitorId);
 
         $this->assertInstanceOf(Monitor::class, $monitor);
         $this->assertEquals($this->monitorId, $monitor->id);
@@ -78,7 +94,7 @@ class MonitorsTest extends KumaTestCase
 
         sleep(2);
 
-        $heartbeats = $this->kuma->monitors->beats($this->monitor->id);
+        $heartbeats = $this->endpoint->beats($this->monitor->id);
 
         $this->assertIsArray($heartbeats);
 

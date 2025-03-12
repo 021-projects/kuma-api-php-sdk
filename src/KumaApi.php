@@ -19,6 +19,7 @@ class KumaApi
         $this->baseUri = $baseUri;
         $this->http = new Client([
             'base_uri' => $baseUri,
+            'http_errors' => false,
         ]);
 
         $this->registerEndpoints();
