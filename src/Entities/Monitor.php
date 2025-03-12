@@ -10,6 +10,7 @@ use O21\ApiEntity\BaseEntity;
  *
  * @property int $id
  * @property string $name
+ * @property \O21\KumaApi\Enums\MonitorType $type
  * @property string $pathName
  * @property string $url
  * @property bool $active
@@ -27,7 +28,7 @@ use O21\ApiEntity\BaseEntity;
  * @property bool $ignoreTls
  * @property int $maxredirects
  * @property array $acceptedStatuscodes
- * @property int $proxyId
+ * @property ?int $proxyId
  * @property string $method
  * @property string $httpBodyEncoding
  * @property string $body

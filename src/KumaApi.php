@@ -9,14 +9,16 @@ class KumaApi
     use Concerns\Auth;
     use Concerns\Endpoints;
 
+    protected string $baseUri;
     protected Client $http;
 
     public function __construct(
-        string $baseUrl,
+        string $baseUri,
         protected ?string $accessToken = null,
     ) {
+        $this->baseUri = $baseUri;
         $this->http = new Client([
-            'base_uri' => $baseUrl,
+            'base_uri' => $baseUri,
         ]);
 
         $this->registerEndpoints();
@@ -62,6 +64,11 @@ class KumaApi
         ]);
 
         return json_decode($response->getBody()->getContents(), true);
+    }
+
+    public function getBaseUri(): string
+    {
+        return $this->baseUri;
     }
 
     public function getAccessToken(): ?string

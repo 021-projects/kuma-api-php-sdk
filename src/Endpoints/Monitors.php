@@ -2,18 +2,28 @@
 
 namespace O21\KumaApi\Endpoints;
 
-use O21\KumaApi\Entities\Beat;
+use O21\KumaApi\Entities\Heartbeat;
 use O21\KumaApi\Entities\Monitor;
 use O21\KumaApi\Enums\DnsResolveType;
 use O21\KumaApi\Enums\MonitorType;
 
 class Monitors extends KumaEndpoint
 {
+    /**
+     * @return Monitor[]
+     */
+    public function list(): array
+    {
+        $monitors = $this->jsonRequest()['monitors'] ?? [];
+        return array_map(fn(array $monitor) => new Monitor($monitor), $monitors);
+    }
+
     public function get(int $id): ?Monitor
     {
         $data = $this->jsonRequest((string)$id);
+        $monitor = $data['monitor'] ?? null;
 
-        return $data ? new Monitor($data) : null;
+        return $monitor ? new Monitor($monitor) : null;
     }
 
     /**
@@ -34,7 +44,7 @@ class Monitors extends KumaEndpoint
         ?bool $expiryNotification = null,
         ?bool $ignoreTls = null,
         ?int $maxredirects = null,
-        ?array $accepted_statuscodes = null,
+        ?array $accepted_statuscodes = ['200-299'],
         ?int $proxyId = null,
         ?string $method = null,
         ?string $httpBodyEncoding = null,
@@ -105,17 +115,24 @@ class Monitors extends KumaEndpoint
         return $data['monitorID'] ?? null;
     }
 
+    public function delete(int $id): bool
+    {
+        $data = $this->jsonRequest((string)$id, method: 'DELETE');
+        return $data['success'] ?? false;
+    }
+
     /**
      * @param  int  $id
      * @param  int  $hours
-     * @return \O21\KumaApi\Entities\Beat[]|null
+     * @return \O21\KumaApi\Entities\Heartbeat[]|null
      */
     public function beats(int $id, int $hours = 6): ?array
     {
         $data = $this->formRequest("/$id/beats", compact('hours'));
+        $beats = $data['monitor_beats'] ?? null;
 
-        return is_array($data)
-            ? array_map(fn($item) => new Beat($item), $data)
+        return is_array($beats)
+            ? array_map(fn($item) => new Heartbeat($item), $beats)
             : null;
     }
 
