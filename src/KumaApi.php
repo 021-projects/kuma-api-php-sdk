@@ -38,10 +38,12 @@ class KumaApi
             $headers['Authorization'] = "Bearer {$this->accessToken}";
         }
 
-        $response = $this->http->request($method, $url, [
-            'headers' => $headers,
-            'form_params' => $params,
-        ]);
+        $paramsKey = $method === 'GET' ? 'query' : 'form_params';
+
+        $options = compact('headers');
+        $options[$paramsKey] = $params;
+
+        $response = $this->http->request($method, $url, $options);
 
         return json_decode($response->getBody()->getContents(), true);
     }
