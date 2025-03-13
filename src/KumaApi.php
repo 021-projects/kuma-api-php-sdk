@@ -3,6 +3,7 @@
 namespace O21\KumaApi;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
 
 class KumaApi
 {
@@ -29,7 +30,7 @@ class KumaApi
         string $url,
         array $params = [],
         string $method = 'GET'
-    ): ?array {
+    ): mixed {
         $headers = [
             'Content-Type' => 'application/x-www-form-urlencoded',
         ];
@@ -45,14 +46,14 @@ class KumaApi
 
         $response = $this->http->request($method, $url, $options);
 
-        return json_decode($response->getBody()->getContents(), true);
+        return $this->decodeResponse($response);
     }
 
     public function jsonRequest(
         string $url,
         array $params = [],
         string $method = 'GET'
-    ): ?array {
+    ): mixed {
         $headers = [
             'Content-Type' => 'application/json',
         ];
@@ -66,7 +67,18 @@ class KumaApi
             'json' => $params,
         ]);
 
-        return json_decode($response->getBody()->getContents(), true);
+        return $this->decodeResponse($response);
+    }
+
+    protected function decodeResponse(Response $response): mixed
+    {
+        $json = @json_decode($response->getBody()->getContents(), true);
+
+        if ($json) {
+            return $json;
+        }
+
+        return $response->getBody()->getContents();
     }
 
     public function getBaseUri(): string

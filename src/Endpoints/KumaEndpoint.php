@@ -12,7 +12,7 @@ class KumaEndpoint
         string $endpoint = '',
         array $params = [],
         string $method = 'GET',
-    ): ?array {
+    ): mixed {
         $endpoint = rtrim($this->rootEndpoint(), '/').'/'.$endpoint;
         $endpoint = preg_replace('/\/{2,}/', '/', $endpoint);
         return $this->api->jsonRequest($endpoint, $params, $method);
@@ -22,7 +22,7 @@ class KumaEndpoint
         string $endpoint = '',
         array $params = [],
         string $method = 'GET',
-    ): ?array {
+    ): mixed {
         $endpoint = rtrim($this->rootEndpoint(), '/').'/'.$endpoint;
         $endpoint = preg_replace('/\/{2,}/', '/', $endpoint);
         return $this->api->formRequest($endpoint, $params, $method);
