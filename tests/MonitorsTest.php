@@ -4,6 +4,10 @@ namespace O21\KumaApi\Tests;
 
 use Carbon\Carbon;
 use O21\KumaApi\Endpoints\Monitors;
+use O21\KumaApi\Entities\Certificate;
+use O21\KumaApi\Entities\CertificateInfo;
+use O21\KumaApi\Entities\CertificateIssuer;
+use O21\KumaApi\Entities\CertificateSubject;
 use O21\KumaApi\Entities\Heartbeat;
 use O21\KumaApi\Entities\Monitor;
 use O21\KumaApi\Entities\MonitorDashboard;
@@ -119,6 +123,17 @@ class MonitorsTest extends KumaTestCase
         $this->assertArrayHasKey('24', $dashboard->uptimes);
         $this->assertArrayHasKey('720', $dashboard->uptimes);
         $this->assertIsFloat($dashboard->avgResponseTime);
+        $this->assertInstanceOf(Certificate::class, $dashboard->cert);
+        $this->assertTrue($dashboard->cert->valid);
+        $this->assertInstanceOf(CertificateInfo::class, $dashboard->cert->certInfo);
+        $this->assertInstanceOf(CertificateIssuer::class, $dashboard->cert->certInfo->issuer);
+        $this->assertIsString($dashboard->cert->certInfo->issuer->CN);
+        $this->assertIsString($dashboard->cert->certInfo->issuer->O);
+        $this->assertIsString($dashboard->cert->certInfo->issuer->C);
+        $this->assertInstanceOf(CertificateSubject::class, $dashboard->cert->certInfo->subject);
+        $this->assertIsString($dashboard->cert->certInfo->subject->CN);
+        $this->assertIsString($dashboard->cert->certInfo->subject->O);
+        $this->assertIsString($dashboard->cert->certInfo->subject->C);
     }
 
     public function testBeats(): void
