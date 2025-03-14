@@ -2,23 +2,23 @@
 
 namespace O21\KumaApi\Tests;
 
-use O21\KumaApi\Endpoints\Ping;
+use O21\KumaApi\Endpoints\Pings;
 
-class PingTest extends KumaTestCase
+class PingsTest extends KumaTestCase
 {
-    protected Ping $endpoint;
+    protected Pings $endpoint;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->auth();
-        $this->endpoint = $this->kuma->ping;
+        $this->endpoint = $this->kuma->pings;
     }
 
-    public function testAvgList(): void
+    public function testGetList(): void
     {
-        $pings = $this->endpoint->avg();
+        $pings = $this->endpoint->get();
 
         $this->assertIsArray($pings);
         $this->assertNotEmpty($pings);
@@ -28,12 +28,12 @@ class PingTest extends KumaTestCase
         $this->assertSameSize($monitors, $pings);
     }
 
-    public function testAvgById(): void
+    public function testGetById(): void
     {
         $monitors = $this->kuma->monitors->list();
         $monitor = reset($monitors);
 
-        $ping = $this->endpoint->avg($monitor->id);
+        $ping = $this->endpoint->get($monitor->id);
 
         $this->assertIsInt($ping);
     }

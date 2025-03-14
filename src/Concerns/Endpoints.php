@@ -3,19 +3,19 @@
 namespace O21\KumaApi\Concerns;
 
 use O21\KumaApi\Endpoints\Monitors;
-use O21\KumaApi\Endpoints\Ping;
-use O21\KumaApi\Endpoints\Uptime;
+use O21\KumaApi\Endpoints\Pings;
+use O21\KumaApi\Endpoints\Uptimes;
 
 trait Endpoints
 {
     public Monitors $monitors;
-    public Ping $ping;
-    public Uptime $uptime;
+    public Pings $pings;
+    public Uptimes $uptimes;
 
     protected function registerEndpoints(): void
     {
         $this->monitors = new Monitors($this);
-        $this->ping = new Ping($this);
-        $this->uptime = new Uptime($this);
+        $this->pings = new Pings($this);
+        $this->uptimes = new Uptimes($this);
     }
 }

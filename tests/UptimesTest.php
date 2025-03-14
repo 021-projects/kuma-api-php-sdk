@@ -2,18 +2,18 @@
 
 namespace O21\KumaApi\Tests;
 
-use O21\KumaApi\Endpoints\Uptime;
+use O21\KumaApi\Endpoints\Uptimes;
 
-class UptimeTest extends KumaTestCase
+class UptimesTest extends KumaTestCase
 {
-    protected Uptime $endpoint;
+    protected Uptimes $endpoint;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->auth();
-        $this->endpoint = $this->kuma->uptime;
+        $this->endpoint = $this->kuma->uptimes;
     }
 
     public function testUptimeList(): void

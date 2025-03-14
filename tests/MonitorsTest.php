@@ -6,11 +6,14 @@ use Carbon\Carbon;
 use O21\KumaApi\Endpoints\Monitors;
 use O21\KumaApi\Entities\Heartbeat;
 use O21\KumaApi\Entities\Monitor;
+use O21\KumaApi\Entities\MonitorDashboard;
 use O21\KumaApi\Enums\MonitorStatus;
 use O21\KumaApi\Enums\MonitorType;
 
 class MonitorsTest extends KumaTestCase
 {
+    public static ?int $_monitorId = null;
+
     protected ?Monitor $monitor = null;
     protected ?int $monitorId = null;
     protected Monitors $endpoint;
@@ -20,7 +23,17 @@ class MonitorsTest extends KumaTestCase
         parent::setUp();
 
         $this->auth();
-        $this->endpoint = $this->kuma->monitors;
+        $this->endpoint ??= $this->kuma->monitors;
+        $this->monitorId = self::$_monitorId;
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        if (null !== self::$_monitorId) {
+            self::getAuthorizedKuma()
+                ->monitors
+                ->delete(self::$_monitorId);
+        }
     }
 
     public function testCreate(): void
@@ -34,6 +47,7 @@ class MonitorsTest extends KumaTestCase
         $this->assertIsInt($id);
 
         $this->monitorId = $id;
+        self::$_monitorId = $id;
     }
 
     public function testGetList(): void
@@ -74,6 +88,7 @@ class MonitorsTest extends KumaTestCase
         $this->assertNull($m);
 
         $this->monitorId = null;
+        self::$_monitorId = null;
     }
 
     public function testGetById(): void
@@ -86,6 +101,24 @@ class MonitorsTest extends KumaTestCase
         $this->assertEquals($this->monitorId, $monitor->id);
 
         $this->monitor = $monitor;
+    }
+
+    public function testDashboard(): void
+    {
+        $this->assertMonitorSettled();
+
+        sleep(2);
+
+        $dashboard = $this->endpoint->dashboard($this->monitor->id);
+
+        $this->assertInstanceOf(MonitorDashboard::class, $dashboard);
+        $this->assertInstanceOf(Monitor::class, $dashboard->monitor);
+        $this->assertIsArray($dashboard->heartbeats);
+        $this->assertInstanceOf(Heartbeat::class, reset($dashboard->heartbeats));
+        $this->assertIsArray($dashboard->uptimes);
+        $this->assertArrayHasKey('24', $dashboard->uptimes);
+        $this->assertArrayHasKey('720', $dashboard->uptimes);
+        $this->assertIsFloat($dashboard->avgResponseTime);
     }
 
     public function testBeats(): void

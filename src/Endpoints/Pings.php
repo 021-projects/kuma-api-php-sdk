@@ -2,9 +2,9 @@
 
 namespace O21\KumaApi\Endpoints;
 
-class Ping extends KumaEndpoint
+class Pings extends KumaEndpoint
 {
-    public function avg(?int $monitorId = null): array|int|null
+    public function get(?int $monitorId = null): array|int|null
     {
         $endpoint = $monitorId ?: '';
 
@@ -13,6 +13,6 @@ class Ping extends KumaEndpoint
 
     protected function rootEndpoint(): string
     {
-        return '/ping';
+        return '/pings';
     }
 }

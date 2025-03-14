@@ -4,6 +4,7 @@ namespace O21\KumaApi\Endpoints;
 
 use O21\KumaApi\Entities\Heartbeat;
 use O21\KumaApi\Entities\Monitor;
+use O21\KumaApi\Entities\MonitorDashboard;
 use O21\KumaApi\Enums\DnsResolveType;
 use O21\KumaApi\Enums\MonitorType;
 
@@ -23,9 +24,16 @@ class Monitors extends KumaEndpoint
     public function get(int $id): ?Monitor
     {
         $data = $this->jsonRequest((string)$id);
-        $monitor = $data['monitor'] ?? null;
+        return ! empty($data['id']) ? new Monitor($data) : null;
+    }
 
-        return $monitor ? new Monitor($monitor) : null;
+    public function dashboard(int $id, int $heartbeatsHours = 1): ?MonitorDashboard
+    {
+        $data = $this->jsonRequest("/$id/dashboard", [
+            'heartbeats_hours' => $heartbeatsHours,
+        ]);
+
+        return ! empty($data['monitor']) ? new MonitorDashboard($data) : null;
     }
 
     /**
@@ -129,14 +137,15 @@ class Monitors extends KumaEndpoint
      * @param  int  $hours
      * @return \O21\KumaApi\Entities\Heartbeat[]|null
      */
-    public function beats(int $id, int $hours = 6): ?array
+    public function beats(int $id, int $hours = 1): ?array
     {
         $data = $this->formRequest("/$id/beats", compact('hours'));
-        $beats = $data['monitor_beats'] ?? null;
 
-        return is_array($beats)
-            ? array_map(fn($item) => new Heartbeat($item), $beats)
-            : null;
+        if (empty($data)) {
+            return null;
+        }
+
+        return array_map(fn(array $beat) => new Heartbeat($beat), $data);
     }
 
     protected function rootEndpoint(): string

@@ -2,7 +2,7 @@
 
 namespace O21\KumaApi\Endpoints;
 
-class Uptime extends KumaEndpoint
+class Uptimes extends KumaEndpoint
 {
     public function get(?int $id = null): array
     {
@@ -13,6 +13,6 @@ class Uptime extends KumaEndpoint
 
     protected function rootEndpoint(): string
     {
-        return 'uptime';
+        return 'uptimes';
     }
 }
