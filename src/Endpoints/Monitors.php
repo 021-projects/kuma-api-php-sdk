@@ -27,10 +27,10 @@ class Monitors extends KumaEndpoint
         return ! empty($data['id']) ? new Monitor($data) : null;
     }
 
-    public function dashboard(int $id, int $heartbeatsHours = 1): ?MonitorDashboard
+    public function dashboard(int $id, int $heartbeatHours = 1): ?MonitorDashboard
     {
         $data = $this->jsonRequest("/$id/dashboard", [
-            'heartbeats_hours' => $heartbeatsHours,
+            'heartbeat_hours' => $heartbeatHours,
         ]);
 
         return ! empty($data['monitor']) ? new MonitorDashboard($data) : null;
